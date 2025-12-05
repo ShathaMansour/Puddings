@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+{% block title %}About • Pudding’s{% endblock %}
+{% set active = 'about' %}
+
+{% block content %}
+
+<section class="about-section">
+    <h1>About Pudding’s</h1>
+
+    <div class="about-banner"></div>
+
+    <p class="about-text">
+        Pudding’s began with a simple love for warmth, comfort, and small moments that turn the
+        ordinary into something special. Inspired by Studio Ghibli’s gentle storytelling,
+        our café was created to feel like a peaceful refuge—soft, cozy, and filled with heart.
+    </p>
+
+    <p class="about-text">
+        Every cup and pastry reflects our values: kindness, creativity, and the joy found in sharing.
+        We hope you feel at home with every visit.
+    </p>
+</section>
+
+<!-- LOCATE US -->
+<section id="locate" class="locate-section">
+    <h1>Locate Us</h1>
+
+    <div class="map-box">
+        Map Placeholder
+    </div>
+
+    <div class="directions">
+        <h3>How to Get Here</h3>
+        <p>
+            We're located in the heart of Comfort Town, a short walk from the central station.  
+            Look for our warm brown awning and the scent of fresh pudding.
+        </p>
+
+        <p>
+            <strong>Address:</strong> 123 Cozy Lane  
+            <br>
+            <strong>Phone:</strong> (555) 123-4567  
+            <br>
+            <strong>Email:</strong> hello@puddingscafe.com  
+        </p>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+    <h1>Contact</h1>
+
+    <div class="contact-icons">
+        <div class="contact-card">📞</div>
+        <div class="contact-card">📧</div>
+        <div class="contact-card">📸</div>
+    </div>
+</section>
+
+{% endblock %}

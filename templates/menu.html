@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+{% block title %}Menu • Pudding’s{% endblock %}
+{% set active = 'menu' %}
+
+{% block content %}
+
+<div class="menu-layout">
+
+    <!-- LEFT SIDEBAR WITH CATEGORY LINKS -->
+    <aside class="menu-sidebar">
+        {% for category in categories.keys() %}
+            <a href="#cat-{{ loop.index }}" class="sidebar-category">
+                {{ category }}
+            </a>
+        {% endfor %}
+
+        <a href="/cart" class="sidebar-cart-btn">Go to Cart</a>
+    </aside>
+
+
+    <!-- RIGHT MAIN CONTENT -->
+    <section class="menu-content">
+
+        {% for category, items in categories.items() %}
+        <div id="cat-{{ loop.index }}" class="menu-category-section">
+
+            <h2 class="menu-category-title">{{ category }}</h2>
+
+            <div class="menu-grid">
+
+                {% for item in items %}
+                <div class="menu-item-card">
+
+<div class="menu-item-image">
+    {% if item["image"] %}
+        <img class="menu-item-img"
+             src="{{ url_for('static', filename=item['image']) }}"
+             alt="{{ item['name'] }}">
+    {% else %}
+        <div class="no-img">No Image</div>
+    {% endif %}
+</div>
+
+
+
+                    <!-- ITEM NAME + PRICE -->
+                    <h3 class="menu-item-name">
+                        {{ item["name"] }}
+                        <span class="item-price">£{{ "%.2f"|format(item["price"]) }}</span>
+                    </h3>
+
+                    <p class="menu-item-desc">{{ item["description"] }}</p>
+
+                    <div class="menu-item-actions">
+                        <a href="/item/{{ item.id }}" class="details-btn">Details</a>
+
+                        <form method="POST" action="/add-to-cart/{{ item.id }}">
+                            <button class="add-btn">+</button>
+                        </form>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

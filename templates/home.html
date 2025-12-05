@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+{% block title %}Home • Pudding’s{% endblock %}
+{% set active = 'home' %}
+
+{% block content %}
+
+<!-- SLIDESHOW -->
+<section class="slideshow">
+    <div class="slide-box">
+        SLIDE SHOW
+    </div>
+</section>
+
+<!-- CATEGORY 1 -->
+<section class="category">
+    <div class="cat-header">
+        <h2>Category 1</h2>
+        <button class="browse-btn">Browse →</button>
+    </div>
+
+    <div class="items-row">
+        <div class="item-card">Item 1</div>
+        <div class="item-card">Item 2</div>
+        <div class="item-card">Item 3</div>
+    </div>
+</section>
+
+<!-- CATEGORY 2 -->
+<section class="category">
+    <div class="cat-header">
+        <h2>Category 2</h2>
+        <button class="browse-btn">Browse →</button>
+    </div>
+
+    <div class="items-row">
+        <div class="item-card">Item 1</div>
+        <div class="item-card">Item 2</div>
+        <div class="item-card">Item 3</div>
+    </div>
+</section>
+
+<!-- VISIT US -->
+<section class="visit-section">
+    <h2>Visit Us</h2>
+    <a href="/about#locate" class="location-btn"># location page</a>
+</section>
+
+{% endblock %}

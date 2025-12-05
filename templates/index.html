@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Pudding’s Café{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@400;500;600&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- NAVBAR (shared) -->
+    <nav class="navbar">
+        <div class="logo">Pudding’s</div>
+
+        <ul class="nav-links">
+            <li><a href="/" class="{% if active=='home' %}active{% endif %}">Home</a></li>
+            <li><a href="/about" class="{% if active=='about' %}active{% endif %}">About</a></li>
+            <li><a href="/menu" class="{% if active=='menu' %}active{% endif %}">Order</a></li>
+            <li><a href="/cart" class="{% if active=='cart' %}active{% endif %}">Cart</a></li>
+        </ul>
+    </nav>
+
+    <!-- PAGE CONTENT -->
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© {{ current_year }} Pudding’s Café • Cozy moments, warm hearts.</p>
+    </footer>
+
+</body>
+</html>
