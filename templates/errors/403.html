@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block title %}Forbidden • Pudding’s{% endblock %}
+
+{% block content %}
+
+<div class="error-wrapper">
+        <h1 class="error-title">403</h1>
+        <h2 class="error-subtitle">Access Forbidden</h2>
+        <!-- Error Image -->
+        <div class="error-image-box">
+            <img src="{{ url_for('static', filename='img/403.png') }}" class="error-image" alt="403 Forbidden">
+        </div>
+
+        <p class="error-text">
+            Uh oh! This is a Forbidden area.  
+            I don’t think you have the right permissions to hangout with us around here.
+        </p>
+
+        <a href="/" class="error-btn">Return Home</a>
+</div>
+
+{% endblock %}

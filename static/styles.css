@@ -69,16 +69,63 @@ h1, h2, h3, .logo {
     color: var(--nav-link-hover-text);
     transform: translateY(-2px);
 }
+/* ---------- WELCOME HERO SECTION ---------- */
+.welcome-hero {
+    text-align: center;
+    animation: fadeIn 2s ease forwards;
+}
+/* SVG handwriting container */
+.welcome-svg {
+    width: 100%;
+    max-width: 900px;
+    height: 120px; /* 🔥 reduces vertical space */
+    margin: 10px auto 0;  /* 🔥 less space above/below */
+    display: block;
+}
+
+/* Text style inside SVG */
+.welcome-svg text {
+    font-family: "Cormorant Infant", serif;
+    font-style: italic;
+    font-size: 64px; /* slightly smaller = tighter spacing */
+    fill: none;
+    stroke:var(--text);
+    stroke-width: 2.2px;
+
+    /* Handwriting animation */
+    stroke-dasharray: 1500;
+    stroke-dashoffset: 1500;
+    animation: handwriting 4s ease forwards;
+}
+
+/* Handwriting animation */
+@keyframes handwriting {
+    0% { stroke-dashoffset: 1500; fill: transparent; }
+    85% { stroke-dashoffset: 0; fill: transparent; }
+    100% { stroke-dashoffset: 0; fill: #4A292B; }
+}
+
+/* Subtitle spacing + animation */
+.welcome-subtitle {
+    font-family: "Karla", sans-serif;
+    font-size: 1.2rem;
+    margin-top: -5px; /* 🔥 pulls text closer to the handwriting */
+    color: var(--text);
+    opacity: 0;
+    animation: fadeIn 2s ease forwards 2.5s;
+}
+
 
 /* ---------- SLIDESHOW ---------- */
 
 .slideshow {
     width: 100%;
     max-width: 900px;
-    margin: 40px auto;
+    margin: 20px auto;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    animation: fadeIn 1.5s ease;
 }
 
 .slideshow-container {
@@ -94,20 +141,32 @@ h1, h2, h3, .logo {
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 1.8s ease-in-out;
+    transform: scale(1.05);
+    transition: opacity 1.8s ease-in-out, transform 6s ease;
 }
 
 /* Visible slide */
 .slide.active {
     opacity: 1;
+    transform: scale(1);
 }
 
 /* ---------- CATEGORY SECTIONS ---------- */
 .category {
-    margin: 60px auto;
+    margin: 10px auto;
     padding: 10px 30px;
     max-width: 1100px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s ease forwards;
+    background-color: #6b4b4b;
+    border-radius: 20px;
 }
+/* stagger per section */
+.category:nth-child(2) { animation-delay: 0.2s; }
+.category:nth-child(3) { animation-delay: 0.4s; }
+.category:nth-child(4) { animation-delay: 0.6s; }
+
 .cat-header {
     display: flex;
     justify-content: space-between;
@@ -116,7 +175,7 @@ h1, h2, h3, .logo {
 
 .cat-header h2 {
     font-size: 1.8em;
-    color: var(--text-strong);
+    color: var(--accent-light);
     border-left: 6px solid var(--accent-light);
     padding-left: 12px;
 }
@@ -173,7 +232,15 @@ h1, h2, h3, .logo {
     border-radius: 16px;
     padding: 15px;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardAppear 0.8s ease forwards;
 }
+/* Each card animates slightly later */
+.item-card:nth-child(1) { animation-delay: 0.1s; }
+.item-card:nth-child(2) { animation-delay: 0.2s; }
+.item-card:nth-child(3) { animation-delay: 0.3s; }
+.item-card:nth-child(4) { animation-delay: 0.4s; }
 
 .item-card:hover {
     transform: translateY(-6px) scale(1.02);
@@ -298,7 +365,7 @@ h1, h2, h3, .logo {
     background: var(--card-bg);
     border: 2px solid var(--accent-light);
     border-radius: 16px;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
@@ -307,25 +374,25 @@ h1, h2, h3, .logo {
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-/* IMAGE PLACEHOLDER */
 .menu-item-image {
     background: var(--accent-light);
     height: 160px;
     border-radius: 12px;
+    overflow: hidden; /* important for cropping */
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--text-strong);
     margin-bottom: 15px;
 }
 
 .menu-item-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   
     border-radius: 12px;
     display: block;
 }
+
 
 /* NAME + PRICE */
 .menu-item-name {
@@ -335,10 +402,6 @@ h1, h2, h3, .logo {
     color: var(--text-strong);
 }
 
-.item-price {
-    font-size: 0.9em;
-    color: var(--heading-muted);
-}
 
 /* DESCRIPTION */
 .menu-item-desc {
@@ -352,6 +415,11 @@ h1, h2, h3, .logo {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.category.visible,
+.item-card.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* ACTION BUTTONS */
@@ -396,6 +464,45 @@ h1, h2, h3, .logo {
     background: var(--add-btn-hover);
 }
 
+/* ---------- GLOBAL ANIMATION UTILS ---------- */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards;
+}
+
+.fade-in-slow {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 1.4s ease forwards;
+}
+
+.fade-in-delay {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 1.2s ease forwards 0.3s;
+}
+
+.scale-in {
+    opacity: 0;
+    transform: scale(0.95);
+    animation: scaleIn 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* ---------- ABOUT PAGE ---------- */
 
 .about-section {
@@ -409,6 +516,7 @@ h1, h2, h3, .logo {
     font-size: 2.4em;
     color: var(--text-strong);
     margin-bottom: 30px;
+    animation: fadeInUp 1s ease forwards;
 }
 
 .about-banner {
@@ -417,14 +525,21 @@ h1, h2, h3, .logo {
     margin: 20px auto;
     overflow: hidden;
     border-radius: 30px;
+    animation: scaleIn 1s ease forwards;
 }
 
 .about-banner img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: inherit;
+    border-radius: 40px;
+    transition: transform 0.6s ease;
 }
+
+.about-banner img:hover {
+    transform: scale(1.05);
+}
+
 .about-text {
     font-size: 1.1em;
     line-height: 1.7em;
@@ -434,6 +549,7 @@ h1, h2, h3, .logo {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    animation: fadeInUp 1.3s ease forwards;
 }
 
 /* ---------- LOCATE US ---------- */
@@ -449,6 +565,7 @@ h1, h2, h3, .logo {
     font-size: 2.3em;
     margin-bottom: 25px;
     color: var(--text-strong);
+    animation: fadeInUp 1s ease forwards;
 }
 
 .map-box {
@@ -458,6 +575,7 @@ h1, h2, h3, .logo {
     overflow: hidden;
     box-shadow: 0px 6px 14px rgba(0,0,0,0.12);
     margin: 20px 0;
+    animation: fadeInUp 1.2s ease forwards;
 }
 
 #map {
@@ -472,6 +590,7 @@ h1, h2, h3, .logo {
     padding: 25px 30px;
     border: 2px solid var(--accent-light);
     box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    animation: fadeInUp 1.4s ease forwards;
 }
 
 /* ---------- CONTACT SECTION ---------- */
@@ -485,6 +604,7 @@ h1, h2, h3, .logo {
     font-size: 2.3em;
     margin-bottom: 30px;
     color: var(--text-strong);
+    animation: fadeInUp 1s ease forwards;
 }
 
 .contact-icons {
@@ -505,12 +625,15 @@ h1, h2, h3, .logo {
     align-items: center;
     font-size: 34px;
     color: var(--text-strong);
+    animation: fadeInUp 1.2s ease forwards;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transform: translateY(-6px) scale(1.08);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.15);
 }
+
 
 /*****************************
     ADMIN DASHBOARD UI
@@ -771,28 +894,51 @@ h1, h2, h3, .logo {
     color: var(--text-strong);
 }
 
+/* -------------------------------------------
+   BARISTA DASHBOARD LAYOUT FIX
+------------------------------------------- */
 .barista-columns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    max-width: 1100px;
-    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 20px;
 }
 
+/* Each column is the same width */
 .barista-column {
-    background: var(--card-bg);
+    flex: 1;                        /* equal width */
+    background: #f3e8df;
     padding: 20px;
     border-radius: 14px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    min-height: 400px;
+    max-height: 75vh;               /* keeps columns aligned */
+    overflow-y: auto;               /* scroll inside column */
 }
 
+/* ensures headings stay visible */
 .barista-column h2 {
-    text-align: center;
+    position: sticky;
+    top: 0;
+    background: #f3e8df;
+    padding: 10px 0;
     margin-bottom: 15px;
-    color: var(--label-text);
+    font-size: 1.4rem;
+    color: #5b3a3a;
+    z-index: 5;
 }
 
+/* ORDER CARDS */
+.order-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    cursor: grab;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
 .barista-datetime {
     font-size: 1.2rem;
     color: var(--text-strong);
@@ -817,7 +963,14 @@ h1, h2, h3, .logo {
     margin-bottom: 15px;
     cursor: grab;
 }
-
+.order-card.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
 .logout-btn {
     display: block;
     width: max-content;
@@ -855,7 +1008,7 @@ h1, h2, h3, .logo {
     display: block;
     margin: 20px auto;
     padding: 12px 30px;
-    background: var(--admin-btn-bg);
+    background-color: var(--admin-btn-bg);
     color: var(--admin-btn-text);
     border-radius: 10px;
     border: none;
@@ -865,4 +1018,159 @@ h1, h2, h3, .logo {
 
 .checkout-btn:hover {
     background: var(--admin-btn-hover);
+}
+/* LOGIN BOX */
+.login-box {
+    width: 360px;
+    background: var(--card-bg);
+    border: 2px solid var(--card-bg);
+    border-radius: 18px;
+    padding: 35px 40px;
+    margin: 80px auto;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+}
+
+.login-title {
+    font-size: 1.9em;
+    color: var(--text-strong);
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.login-subtitle {
+    font-size: 0.95em;
+    color: var(--accent-light);
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* ERROR BOX */
+.login-error {
+    background: #ffdddd;
+    border-left: 5px solid #d9534f;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    color: #7a1f1f;
+    font-weight: 600;
+}
+
+/* LABELS */
+.login-box label {
+    font-weight: 600;
+    margin: 8px 0 4px;
+    color: var(--text-strong);
+}
+
+/* INPUTS */
+.login-box input {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--accent-light);
+    font-size: 1rem;
+    background: #fff;
+    margin-bottom: 12px;
+}
+
+.login-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* LOGIN BUTTON */
+.login-btn {
+    margin-top: 16px;
+    padding: 12px 15px;
+    background: #4A292B;
+    color: #eae0e0;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+    width: 100%;
+}
+
+.login-btn:hover {
+    background: #ffdddd;
+    transform: translateY(-2px);
+    color: #483535;
+}
+
+/* ---------------------------
+      CUSTOM ERROR PAGE
+---------------------------- */
+
+/* Center wrapper */
+.error-wrapper {
+    max-width: 700px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.error-title {
+    font-size: 4.5rem;
+    color: var(--text-strong);
+    margin: 0;
+}
+
+.error-subtitle {
+    font-size: 1.7rem;
+    margin: 10px 0 20px;
+    color: var(--heading-muted);
+}
+
+.error-text {
+    font-size: 1.1rem;
+    color: var(--text);
+    line-height: 1.6em;
+    margin-bottom: 35px;
+}
+
+.error-btn {
+    padding: 12px 26px;
+    background: var(--button-bg);
+    border: 2px solid var(--accent-light);
+    color: var(--text-strong);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.error-btn:hover {
+    background: var(--accent-light);
+    transform: translateY(-3px);
+}
+/* ERROR IMAGE */
+.error-image-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.error-image {
+    width: 70%;
+    max-width: 550px;
+    margin: 0 auto 15px;
+    display: block;
+    border-radius: 10px;
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes cardAppear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

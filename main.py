@@ -1,16 +1,20 @@
 from flask import Flask, render_template, g, request, session, redirect
 import sqlite3
 import configparser
+from database import create_order
+import json
 from auth import auth 
 from admin import admin
 from barista import barista
-from database import create_order
-import json
+import os
+
+
+
+
 
 # ---------------- INITIALIZE FLASK APP ONCE ----------------
 app = Flask(__name__)
 
-print(">>> MAIN LOADED FROM:", __file__)
 
 # ---------------- REGISTER FILTERS ----------------
 @app.template_filter("loads")
@@ -42,7 +46,9 @@ def init(app):
         # Database config
         app.config["DATABASE"] = config.get("database", "db_path")
 
-        app.config["UPLOAD_FOLDER"] = config.get("uploads", "image_folder")
+        app.config["UPLOAD_FOLDER"] = "static/uploads"
+        os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
 
 
     except Exception as e:
@@ -186,6 +192,9 @@ def inject_theme():
     theme = get_setting("theme")
     return {"active_theme": theme}
 
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template("errors/403.html"), 403
 
 # ---------------- RUN SERVER ----------------
 if __name__ == "__main__":

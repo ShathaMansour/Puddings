@@ -1,4 +1,6 @@
 import sqlite3
+from werkzeug.security import generate_password_hash
+
 
 DB_PATH = "var/cafe.db"
 
@@ -30,29 +32,27 @@ with connection:
     """)
 
     connection.execute("""
-    CREATE TABLE IF NOT EXISTS orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        customer_name TEXT,
-        items TEXT NOT NULL,
-        status TEXT NOT NULL CHECK(status IN ('pending', 'progress', 'ready')),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-""")
-    connection.execute("""
-    CREATE TABLE IF NOT EXISTS settings (
-        key TEXT PRIMARY KEY,
-        value TEXT
-    );
-""")
+        CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_name TEXT,
+            items TEXT NOT NULL,
+            status TEXT NOT NULL CHECK(status IN ('pending', 'progress', 'ready', 'collected')),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
 
-# Insert default theme only if not exists
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+    """)
+
+    # Insert default theme only once
     connection.execute("""
         INSERT OR IGNORE INTO settings (key, value)
-        VALUES ('theme', 'default');
-""")
-
-    
-
+        VALUES ('theme', 'default')
+    """)
 
     # -------------------------
     # INSERT DEFAULT USERS ONCE
@@ -60,14 +60,15 @@ with connection:
     user_count = connection.execute("SELECT COUNT(*) FROM users").fetchone()[0]
 
     if user_count == 0:
+
         connection.executemany("""
-            INSERT INTO users (username, password, role)
-            VALUES (?, ?, ?)
-        """, [
-            ("testAdmin", "admin123", "admin"),
-            ("testBarista", "barista123", "barista")
-        ])
-        print("Added default users.")
+    INSERT INTO users (username, password, role)
+    VALUES (?, ?, ?)
+""", [
+    ("testAdmin", generate_password_hash("admin123"), "admin"),
+    ("testBarista", generate_password_hash("barista123"), "barista")
+])
+
 
     # -------------------------
     # INSERT SAMPLE MENU ITEMS ONCE
@@ -76,14 +77,30 @@ with connection:
 
     if item_count == 0:
         connection.executemany("""
-            INSERT INTO menu_items (name, price, category, description)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO menu_items (name, price, category, description, image)
+            VALUES (?, ?, ?, ?, ?)
         """, [
-            ("Latte", 3.50, "Drinks", "Smooth espresso with steamed milk"),
-            ("Cappuccino", 3.20, "Drinks", "Classic Italian coffee with foam"),
-            ("Strawberry Cake Slice", 4.00, "Cake", "Fresh, sweet strawberry cake"),
-            ("Croissant", 2.40, "Cake", "Freshly baked butter croissant"),
-            ("Catan Board Game", 2.00, "Board Games", "Rent for 2 hours"),
+
+            # DRINKS
+            ("Vanilla Latte", 3.80, "Drinks", "Smooth espresso blended with steamed milk and vanilla syrup.", "img/slideshow4.png"),
+            ("Iced Caramel Macchiato", 4.20, "Drinks", "Espresso over milk with sweet caramel drizzle served on ice.", "img/slideshow5.png"),
+            ("Mocha Deluxe", 4.50, "Drinks", "Rich espresso mixed with chocolate and topped with whipped cream.", "img/slideshow4.png"),
+            ("Matcha Green Tea Latte", 4.00, "Drinks", "Creamy ceremonial-grade matcha blended with milk.", "img/slideshow5.png"),
+            ("Chai Spice Latte", 3.90, "Drinks", "Aromatic chai infused with cinnamon, cardamom, and warm spices.", "img/slideshow4.png"),
+
+            # CAKE
+            ("Triple Chocolate Cake Slice", 4.50, "Cake", "Dark, milk, and white chocolate layers topped with ganache.", "img/slideshow2.png"),
+            ("Victoria Sponge Slice", 4.20, "Cake", "Classic vanilla sponge filled with raspberry jam and cream.", "img/slideshow3.png"),
+            ("Carrot Walnut Cake", 4.30, "Cake", "Moist carrot cake with walnuts and cream cheese frosting.", "img/slideshow2.png"),
+            ("Red Velvet Slice", 4.40, "Cake", "Smooth cocoa sponge with velvety cream cheese icing.", "img/slideshow3.png"),
+            ("Lemon Drizzle Slice", 3.90, "Cake", "Zesty lemon sponge soaked in sweet citrus glaze.", "img/slideshow3.png"),
+
+            # BOARD GAMES
+            ("Uno Deck", 1.50, "Board Games", "Fast-paced card game fun for all ages.", "img/shess.png"),
+            ("Jenga Tower", 2.00, "Board Games", "Stack wooden blocks and try not to let the tower fall!", "img/shess.png"),
+            ("Chess Set", 2.50, "Board Games", "Classic strategy board game for two players.", "img/shess.png"),
+            ("Dobble", 1.80, "Board Games", "Find and match symbols quickly before your opponents!", "img/shess.png"),
+            ("Exploding Kittens", 2.20, "Board Games", "Chaotic and fun card game filled with surprises.", "img/shess.png")
         ])
         print("Added sample menu items.")
 
