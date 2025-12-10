@@ -1,0 +1,102 @@
+{% extends "index.html" %}
+{% block title %}Barista Dashboard{% endblock %}
+
+{% block content %}
+
+<h1 class="barista-title">Barista Dashboard</h1>
+
+<div class="barista-datetime">
+    <span id="barista-date"></span>
+    <span id="barista-time"></span>
+</div>
+
+<div class="barista-columns">
+
+    <!-- PENDING -->
+    <div class="barista-column" id="pending" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>Pending</h2>
+        {% for o in orders if o.status == "pending" %}
+            {% include 'barista/order_card.html' %}
+        {% endfor %}
+    </div>
+
+    <!-- IN PROGRESS -->
+    <div class="barista-column" id="progress" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>In Progress</h2>
+        {% for o in orders if o.status == "progress" %}
+            {% include 'barista/order_card.html' %}
+        {% endfor %}
+    </div>
+
+    <!-- READY -->
+    <div class="barista-column" id="ready" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>Ready</h2>
+        {% for o in orders if o.status == "ready" %}
+            {% include 'barista/order_card.html' %}
+        {% endfor %}
+    </div>
+
+</div>
+
+<a class="logout-btn" href="/logout">Logout</a>
+
+<script>
+// ALLOW DROP
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+// DRAG START
+function drag(ev) {
+    ev.dataTransfer.setData("order_id", ev.target.dataset.id);
+}
+
+// DROP HANDLER
+function drop(ev) {
+    ev.preventDefault();
+
+    const orderId = ev.dataTransfer.getData("order_id");
+    const newStatus = ev.target.closest(".barista-column").id;
+
+    // Move element visually
+    const card = document.querySelector(`[data-id='${orderId}']`);
+    ev.target.closest(".barista-column").appendChild(card);
+
+    // Send AJAX update
+    fetch("/barista/update", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            order_id: orderId,
+            status: newStatus
+        })
+    });
+}
+
+function updateBaristaClock() {
+    const dateEl = document.getElementById("barista-date");
+    const timeEl = document.getElementById("barista-time");
+
+    const now = new Date();
+
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+    };
+
+    dateEl.textContent = now.toLocaleDateString('en-UK', options);
+    timeEl.textContent = now.toLocaleTimeString('en-UK', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+// update immediately
+updateBaristaClock();
+
+// update every second
+setInterval(updateBaristaClock, 1000);
+
+
+</script>
+
+{% endblock %}

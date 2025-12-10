@@ -1,0 +1,27 @@
+<div class="order-card" 
+     draggable="true" 
+     ondragstart="drag(event)" 
+     data-id="{{ o.id }}">
+
+    <div class="order-header">
+        <h3>Order #{{ o.id }}</h3>
+        <span class="order-time">{{ o.created_at }}</span>
+    </div>
+
+    {% if o.customer_name %}
+        <p class="order-customer">👤 {{ o.customer_name }}</p>
+    {% endif %}
+
+    <div class="order-items">
+        <h4>Items:</h4>
+        <ul>
+        {% for item in o.items | loads %}
+            <li>
+                <span class="item-name">{{ item.name }}</span>
+                <span class="item-qty">× {{ item.qty }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+</div>
