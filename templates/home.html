@@ -4,6 +4,16 @@
 
 {% block content %}
 
+<section class="welcome-hero">
+    <svg class="welcome-svg" viewBox="0 0 1200 200">
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">
+            Welcome to Pudding’s
+        </text>
+    </svg>
+    <p class="welcome-subtitle">your cozy corner in Edinburgh</p>
+</section>
+
+
 <section class="slideshow">
     <div class="slideshow-container">
         <img src="{{ url_for('static', filename='img/slideshow5.png') }}" class="slide active">
@@ -38,7 +48,6 @@
             {% endif %}
 
             <h3 class="item-name">{{ item.name }}</h3>
-            <p class="item-price">£{{ "%.2f"|format(item.price) }}</p>
 
         </div>
         {% endfor %}
@@ -66,6 +75,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setInterval(nextSlide, 5000);
+
+    /* --------------------------
+        SCROLL REVEAL ANIMATIONS
+    --------------------------- */
+    const revealOptions = {
+        threshold: 0.2
+    };
+
+    const revealOnScroll = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+            }
+        });
+    }, revealOptions);
+
+    document.querySelectorAll(".category, .item-card").forEach(el => {
+        revealOnScroll.observe(el);
+    });
 });
 </script>
 
