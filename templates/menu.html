@@ -14,7 +14,12 @@
             </a>
         {% endfor %}
 
-        <a href="/cart" class="sidebar-cart-btn">Go to Cart</a>
+<a href="/cart" class="sidebar-cart-btn">
+    Cart 
+    {% if cart_count > 0 %}
+        <span class="cart-counter">{{ cart_count }}</span>
+    {% endif %}
+</a>
     </aside>
 
 
@@ -51,13 +56,21 @@
 
                     <p class="menu-item-desc">{{ item["description"] }}</p>
 
-                    <div class="menu-item-actions">
-                        <a href="/item/{{ item.id }}" class="details-btn">Details</a>
+<div class="menu-item-actions">
 
-                        <form method="POST" action="/add-to-cart/{{ item.id }}">
-                            <button class="add-btn">+</button>
-                        </form>
-                    </div>
+    <div class="qty-selector" data-item="{{ item.id }}">
+        <button type="button" class="qty-btn minus">–</button>
+        <span class="qty-number">1</span>
+        <button type="button" class="qty-btn plus">+</button>
+    </div>
+
+    <form method="POST" action="/add-to-cart/{{ item.id }}" class="add-form">
+        <input type="hidden" name="quantity" value="1" class="qty-input">
+        <button class="add-btn">Add</button>
+    </form>
+
+</div>
+
 
                 </div>
                 {% endfor %}
@@ -69,5 +82,34 @@
     </section>
 
 </div>
+<script>
+document.querySelectorAll(".qty-selector").forEach(selector => {
+    const minus = selector.querySelector(".minus");
+    const plus = selector.querySelector(".plus");
+    const number = selector.querySelector(".qty-number");
+    const form = selector.parentElement.querySelector(".add-form");
+    const input = form.querySelector(".qty-input");
+
+    let qty = 1;
+
+plus.addEventListener("click", () => {
+    if (qty < 5) {                  // ⭐ LIMIT 5
+        qty++;
+        number.textContent = qty;
+        input.value = qty;
+    }
+});
+
+
+    minus.addEventListener("click", () => {
+        if (qty > 1) {
+            qty--;
+            number.textContent = qty;
+            input.value = qty;
+        }
+    });
+});
+</script>
+
 
 {% endblock %}

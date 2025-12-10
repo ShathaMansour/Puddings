@@ -7,7 +7,9 @@
 <section class="about-section">
     <h1>About Pudding’s</h1>
 
-    <div class="about-banner"></div>
+    <div class="about-banner">
+    <img src="{{ url_for('static', filename='img/shop.png') }}" >
+    </div>
 
     <p class="about-text">
         Pudding’s began with a simple love for warmth, comfort, and small moments that turn the
@@ -25,36 +27,48 @@
 <section id="locate" class="locate-section">
     <h1>Locate Us</h1>
 
-    <div class="map-box">
-        Map Placeholder
-    </div>
+    <div id="map" class="map-box"></div>
 
     <div class="directions">
         <h3>How to Get Here</h3>
         <p>
-            We're located in the heart of Comfort Town, a short walk from the central station.  
-            Look for our warm brown awning and the scent of fresh pudding.
+            Pudding’s Café is tucked away in a quiet corner of Edinburgh’s city centre, just a few minutes’ walk from the Meadows.
         </p>
 
         <p>
-            <strong>Address:</strong> 123 Cozy Lane  
+            <strong>Address:</strong> 98 S Clerk St, Edinburgh EH8 9PT
             <br>
-            <strong>Phone:</strong> (555) 123-4567  
+            <strong>Phone:</strong> +44 7786061917 
             <br>
-            <strong>Email:</strong> hello@puddingscafe.com  
         </p>
     </div>
 </section>
 
-<!-- CONTACT -->
-<section class="contact-section">
-    <h1>Contact</h1>
+<!-- Leaflet.js + Map Script -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <div class="contact-icons">
-        <div class="contact-card">📞</div>
-        <div class="contact-card">📧</div>
-        <div class="contact-card">📸</div>
-    </div>
-</section>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        // INSERT YOUR COORDINATES HERE
+        const cafeLat = 55.939249  ;
+        const cafeLng = -3.179921;
+
+        const map = L.map('map').setView([cafeLat, cafeLng], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([cafeLat, cafeLng])
+            .addTo(map)
+            .bindPopup("Pudding’s Café")
+            .openPopup();
+    });
+</script>
 
 {% endblock %}

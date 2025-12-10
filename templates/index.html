@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <title>{% block title %}Pudding’s Café{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/' + active_theme + '.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@400;500;600&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-    <!-- NAVBAR (shared) -->
+    <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="logo">Pudding’s</div>
+<a href="{{ url_for('home') }}" class="logo">Pudding’s</a>
 
         <ul class="nav-links">
             <li><a href="/" class="{% if active=='home' %}active{% endif %}">Home</a></li>

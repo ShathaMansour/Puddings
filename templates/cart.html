@@ -1,13 +1,32 @@
 {% extends "index.html" %}
-{% block title %}cart • Pudding’s{% endblock %}
+{% block title %}Your Cart • Pudding’s{% endblock %}
 {% set active = 'cart' %}
 
 {% block content %}
 
-<section class="slideshow">
-    <div class="slide-box">
-        SLIDE SHOW cart
+<h1 class="cart-title">Your Cart</h1>
+
+{% if items|length == 0 %}
+    <p class="empty-cart">Your cart is empty.</p>
+    <a href="/menu" class="btn">Back to Menu</a>
+{% else %}
+
+<div class="cart-container">
+
+    {% for row in items %}
+    <div class="cart-item">
+        <h3>{{ row.item.name }}</h3>
+        <p>Quantity: {{ row.qty }}</p>
+        <p>£{{ "%.2f"|format(row.item.price * row.qty) }}</p>
     </div>
-</section>
+    {% endfor %}
+
+</div>
+
+<form action="/checkout" method="POST">
+    <button class="checkout-btn">Place Order</button>
+</form>
+
+{% endif %}
 
 {% endblock %}

@@ -4,45 +4,69 @@
 
 {% block content %}
 
-<!-- SLIDESHOW -->
 <section class="slideshow">
-    <div class="slide-box">
-        SLIDE SHOW
+    <div class="slideshow-container">
+        <img src="{{ url_for('static', filename='img/slideshow5.png') }}" class="slide active">
+        <img src="{{ url_for('static', filename='img/slideshow2.png') }}" class="slide">
+        <img src="{{ url_for('static', filename='img/slideshow3.png') }}" class="slide">
+        <img src="{{ url_for('static', filename='img/slideshow4.png') }}" class="slide">
     </div>
 </section>
 
-<!-- CATEGORY 1 -->
+{% for category, items in featured.items() %}
 <section class="category">
+
     <div class="cat-header">
-        <h2>Category 1</h2>
-        <button class="browse-btn">Browse →</button>
+        <h2>{{ category }}</h2>
+
+        <a href="/menu#{{ category }}" class="browse-btn">
+            Browse →
+        </a>
     </div>
 
     <div class="items-row">
-        <div class="item-card">Item 1</div>
-        <div class="item-card">Item 2</div>
-        <div class="item-card">Item 3</div>
-    </div>
-</section>
 
-<!-- CATEGORY 2 -->
-<section class="category">
-    <div class="cat-header">
-        <h2>Category 2</h2>
-        <button class="browse-btn">Browse →</button>
+        {% for item in items %}
+        <div class="item-card">
+
+            {% if item.image %}
+            <img class="item-img"
+                 src="{{ url_for('static', filename=item.image) }}"
+                 alt="{{ item.name }}">
+            {% else %}
+            <div class="no-img">No Image</div>
+            {% endif %}
+
+            <h3 class="item-name">{{ item.name }}</h3>
+            <p class="item-price">£{{ "%.2f"|format(item.price) }}</p>
+
+        </div>
+        {% endfor %}
+
     </div>
 
-    <div class="items-row">
-        <div class="item-card">Item 1</div>
-        <div class="item-card">Item 2</div>
-        <div class="item-card">Item 3</div>
-    </div>
 </section>
+{% endfor %}
+
 
 <!-- VISIT US -->
 <section class="visit-section">
     <h2>Visit Us</h2>
-    <a href="/about#locate" class="location-btn"># location page</a>
+    <a href="/about#locate" class="location-btn">locate Pudding’s !</a>
 </section>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    let slideIndex = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    function nextSlide() {
+        slides[slideIndex].classList.remove("active");
+        slideIndex = (slideIndex + 1) % slides.length;
+        slides[slideIndex].classList.add("active");
+    }
+
+    setInterval(nextSlide, 5000);
+});
+</script>
 
 {% endblock %}

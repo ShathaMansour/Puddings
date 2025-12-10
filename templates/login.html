@@ -1,0 +1,13 @@
+<form method="POST" class="login-box">
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <label>Username</label>
+    <input type="text" name="username">
+
+    <label>Password</label>
+    <input type="password" name="password">
+
+    <button>Log In</button>
+</form>
