@@ -1,0 +1,66 @@
+:root {
+    --bg: #1b0f12;
+    --text: #fce8d8;
+
+    --nav-bg: #210c0c;
+    --nav-text: #f8d9b6;
+
+    --nav-link-bg: #3a1a1a;
+    --nav-link-text: #f8e9dc;
+
+    --nav-link-hover-bg: #ff7b00;
+    --nav-link-hover-text: #1b0f12;
+
+    --accent: #ff7b00;
+    --text-strong: #ff7b00;
+--accent-light: #ffb36b;
+
+--button-bg: #2a1a1d;
+--button-text: #f8d9b6;
+
+--card-bg: #1a1112;
+
+--section-bg: #2a1a1d;
+
+--placeholder-bg: #3c2a2c;
+--placeholder-text: #ffc285;
+
+--sidebar-bg: #1a1112;
+--heading-muted: #ffb36b;
+
+--qty-bg: #3a1a1a;
+--qty-bg-hover: #4a2323;
+
+--add-btn-bg: #ff7b00;
+--add-btn-hover: #cc6300;
+
+--admin-btn-bg: #3a1a1a;
+--admin-btn-text: #ffb36b;
+--admin-btn-hover: #4a2323;
+--text-muted: #ffb36b;
+--text-faded: #ff9e69;
+
+--admin-edit-bg: #ff7b00;
+--admin-edit-hover: #cc6300;
+
+--admin-delete-bg: #8c1f1f;
+--admin-delete-hover: #701616;
+
+--input-border: #4a2323;
+--input-bg: #2a1a1d;
+
+--filter-btn-bg: #3a1a1a;
+--filter-btn-text: #ffb36b;
+
+--reset-btn-bg: #4a2323;
+--reset-btn-text: #ffb36b;
+
+--label-text: #ffae7f;
+--input-border: #4a2323;
+--input-bg-light: #1a1112;
+--input-focus-border: #ff7b00;
+--input-focus-shadow: rgba(255, 123, 0, 0.4);
+
+--card-bg-light: #241617;
+
+}

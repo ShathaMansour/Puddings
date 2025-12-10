@@ -1,0 +1,67 @@
+:root {
+    --bg: #fff8f4;
+    --text: #4A292B;
+
+    --nav-bg: #4A292B;
+    --nav-text: #F4ECE5;
+
+    --nav-link-bg: #545557;
+    --nav-link-text: #F4ECE5;
+
+    --nav-link-hover-bg: #E4CDC1;
+    --nav-link-hover-text: #4A292B;
+
+    --accent: #c68b59;
+    --text-strong: #4A292B;
+    --accent-light: #E4CDC1;
+
+    --button-bg: #F4ECE5;
+    --button-text: #4A292B;
+
+    --card-bg: #fff8f4;
+
+    --section-bg: #F4ECE5;
+
+    --placeholder-bg: #eee2db;
+    --placeholder-text: #6b5f58;
+
+    --sidebar-bg: #FAF7F4;
+    --heading-muted: #545557;
+
+    --qty-bg: #e8d5c4;
+--qty-bg-hover: #d9c3af;
+
+--add-btn-bg: #b25c6a;
+--add-btn-hover: #ad754d;
+
+--admin-btn-bg: #6b5656;
+--admin-btn-text: #ffffff;
+--admin-btn-hover: #4e3f3f;
+--text-muted: #5c4646;
+--text-faded: #8c6f6f;
+
+--admin-edit-bg: #5f7d8c;
+--admin-edit-hover: #466573;
+
+--admin-delete-bg: #b35959;
+--admin-delete-hover: #8c4040;
+
+--input-border: #d6c4b8;
+--input-bg: #fff7f3;
+
+--filter-btn-bg: #6d4c4c;
+--filter-btn-text: white;
+
+--reset-btn-bg: #c9b3a8;
+--reset-btn-text: #423434;
+
+--label-text: #5b3a3a;
+
+--input-border: #c8b4ad;
+--input-bg-light: #ffffff;
+--input-focus-border: #a48686;
+--input-focus-shadow: rgba(164, 134, 134, 0.4);
+
+--card-bg-light: #ffffff;
+
+}

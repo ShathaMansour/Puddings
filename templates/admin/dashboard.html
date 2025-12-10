@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+{% block title %}Admin Dashboard • Pudding’s{% endblock %}
+
+{% block content %}
+
+<div class="admin-header">
+    <h1>Admin Dashboard</h1>
+
+    <div class="admin-actions">
+        <a href="/admin/add" class="admin-btn add-btn">+ Add New Item</a>
+    </div>
+</div>
+
+<!-- FILTER BAR -->
+<form method="GET" class="admin-filter-bar">
+
+    <input type="text" name="search" placeholder="Search name..."
+           value="{{ request.args.get('search', '') }}">
+
+    <select name="category">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat }}" 
+            {% if request.args.get('category') == cat %}selected{% endif %}>
+            {{ cat }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="admin-btn filter-btn">Apply</button>
+
+    <a href="/admin" class="admin-btn reset-btn">Reset</a>
+</form>
+<h2>Theme Settings</h2>
+
+<form method="POST" action="/admin/theme">
+    <select name="theme" class="admin-input">
+        <option value="default" {% if active_theme=='default' %}selected{% endif %}>Default</option>
+        <option value="halloween" {% if active_theme=='halloween' %}selected{% endif %}>Halloween</option>
+        <option value="christmas" {% if active_theme=='christmas' %}selected{% endif %}>Christmas</option>
+    </select>
+
+    <button class="admin-btn">Apply Theme</button>
+</form>
+
+<!-- ITEMS GRID -->
+<div class="admin-grid">
+    {% for item in items %}
+    <div class="admin-card">
+
+        {% if item.image %}
+        <img class="admin-item-img"
+             src="{{ url_for('static', filename=item.image) }}"
+             alt="{{ item.name }}">
+        {% else %}
+        <div class="admin-no-img">No Image</div>
+        {% endif %}
+
+        <h3 class="admin-item-name">{{ item.name }}</h3>
+        <p class="admin-item-price">£{{ "%.2f"|format(item.price) }}</p>
+        <p class="admin-item-category">{{ item.category }}</p>
+
+        <div class="admin-card-actions">
+            <a href="/admin/edit/{{ item.id }}" class="admin-action edit">Edit</a>
+            <a href="/admin/delete/{{ item.id }}" class="admin-action delete"
+               onclick="return confirm('Delete this item?');">Delete</a>
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

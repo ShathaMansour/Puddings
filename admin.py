@@ -1,0 +1,131 @@
+import os
+from flask import Blueprint, render_template, request, redirect, session, abort, current_app
+from werkzeug.utils import secure_filename
+from database import get_all_items, get_item, add_item, set_setting, update_item, delete_item, get_db
+
+
+admin = Blueprint("admin", __name__)
+
+def admin_required(func):
+    def wrapper(*a, **kw):
+        if session.get("role") != "admin":
+            return abort(403)
+        return func(*a, **kw)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+# ADMIN DASHBOARD
+from flask import request
+from database import get_all_items
+from functools import wraps
+
+@admin.route("/admin")
+@admin_required
+def admin_dashboard():
+
+    # Get all items from DB
+    items = get_all_items()
+
+    # Extract unique categories
+    categories = sorted({item["category"] for item in items})
+
+    # Get filters from query string
+    search = request.args.get("search", "").strip().lower()
+    category = request.args.get("category", "").strip()
+
+    # Filter items
+    filtered_items = items
+
+    if search:
+        filtered_items = [
+            item for item in filtered_items
+            if search in item["name"].lower()
+        ]
+
+    if category:
+        filtered_items = [
+            item for item in filtered_items
+            if item["category"] == category
+        ]
+
+    return render_template(
+        "admin/dashboard.html",
+        items=filtered_items,
+        categories=categories
+    )
+
+
+# ADD ITEM
+@admin.route("/admin/add", methods=["GET", "POST"])
+@admin_required
+def admin_add_item():
+    if request.method == "POST":
+        name = request.form["name"]
+        price = request.form["price"]
+        category = request.form["category"]
+        desc = request.form["description"]
+
+        # --- FILE UPLOAD ---
+        file = request.files.get("image_file")
+        image_path = None
+        
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            file.save(upload_path)
+            image_path = f"img/{filename}"
+
+        add_item(name, price, category, desc, image_path)
+        return redirect("/admin")
+
+    return render_template("admin/add_item.html")
+
+
+
+# ------------------------------
+# EDIT ITEM
+# ------------------------------
+@admin.route("/admin/edit/<int:item_id>", methods=["GET", "POST"])
+@admin_required
+def admin_edit_item(item_id):
+    item = get_item(item_id)
+
+    if request.method == "POST":
+        name = request.form["name"]
+        price = request.form["price"]
+        category = request.form["category"]
+        desc = request.form["description"]
+
+        # Optional upload
+        file = request.files.get("image_file")
+        image_path = item["image"]  # keep old image unless replaced
+
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            file.save(upload_path)
+            image_path = f"img/{filename}"
+
+        update_item(item_id, name, price, category, desc, image_path)
+        return redirect("/admin")
+
+    return render_template("admin/edit.html", item=item)
+
+
+
+# ------------------------------
+# DELETE ITEM
+# ------------------------------
+@admin.route("/admin/delete/<int:item_id>")
+@admin_required
+def admin_delete_item(item_id):
+    delete_item(item_id)
+    return redirect("/admin")
+
+@admin.route("/admin/theme", methods=["POST"])
+@admin_required
+def admin_change_theme():
+    theme = request.form["theme"]
+    set_setting("theme", theme)
+    return redirect("/admin")

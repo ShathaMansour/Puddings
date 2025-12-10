@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+{% block title %}Add Item • Admin{% endblock %}
+
+{% block content %}
+
+<div class="admin-form-container">
+
+    <h1 class="admin-form-title">Add New Item</h1>
+
+    <!-- IMPORTANT: enctype added -->
+    <form method="POST" enctype="multipart/form-data" class="admin-form">
+
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Price (£)</label>
+            <input type="number" step="0.01" name="price" required>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <input type="text" name="category" required>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="4" required></textarea>
+        </div>
+
+        <!-- NEW IMAGE UPLOAD FIELD -->
+        <div class="form-group">
+            <label>Upload Image</label>
+            <input type="file" name="image_file" accept="image/*">
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="submit-btn">Add Item</button>
+            <a href="/admin" class="cancel-btn">Cancel</a>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
