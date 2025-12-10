@@ -56,30 +56,38 @@ def admin_dashboard():
     )
 
 
-# ADD ITEM
 @admin.route("/admin/add", methods=["GET", "POST"])
 @admin_required
-def admin_add_item():
+def add_item():
     if request.method == "POST":
         name = request.form["name"]
         price = request.form["price"]
         category = request.form["category"]
-        desc = request.form["description"]
+        description = request.form["description"]
 
-        # --- FILE UPLOAD ---
-        file = request.files.get("image_file")
-        image_path = None
-        
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-            file.save(upload_path)
-            image_path = f"img/{filename}"
+        # HANDLE IMAGE UPLOAD
+        image_file = request.files.get("image_file")
+        filename = None
 
-        add_item(name, price, category, desc, image_path)
+        if image_file and image_file.filename != "":
+            filename = secure_filename(image_file.filename)
+            file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            image_file.save(file_path)   # <-- SAVES PERMANENTLY
+
+            # Store path relative to /static
+            filename = f"uploads/{filename}"
+
+        db = get_db()
+        db.execute("""
+            INSERT INTO menu_items (name, price, category, description, image)
+            VALUES (?, ?, ?, ?, ?)
+        """, (name, price, category, description, filename))
+        db.commit()
+
         return redirect("/admin")
 
     return render_template("admin/add_item.html")
+
 
 
 
@@ -88,26 +96,33 @@ def admin_add_item():
 # ------------------------------
 @admin.route("/admin/edit/<int:item_id>", methods=["GET", "POST"])
 @admin_required
-def admin_edit_item(item_id):
-    item = get_item(item_id)
+def edit_item(item_id):
+    db = get_db()
+    item = db.execute("SELECT * FROM menu_items WHERE id=?", (item_id,)).fetchone()
 
     if request.method == "POST":
         name = request.form["name"]
         price = request.form["price"]
         category = request.form["category"]
-        desc = request.form["description"]
+        description = request.form["description"]
 
-        # Optional upload
-        file = request.files.get("image_file")
-        image_path = item["image"]  # keep old image unless replaced
+        image_file = request.files.get("image_file")
+        filename = item["image"]  # keep old image by default
 
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-            file.save(upload_path)
-            image_path = f"img/{filename}"
+        if image_file and image_file.filename != "":
+            filename_new = secure_filename(image_file.filename)
+            file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename_new)
+            image_file.save(file_path)
 
-        update_item(item_id, name, price, category, desc, image_path)
+            filename = f"uploads/{filename_new}"
+
+        db.execute("""
+            UPDATE menu_items
+            SET name=?, price=?, category=?, description=?, image=?
+            WHERE id=?
+        """, (name, price, category, description, filename, item_id))
+
+        db.commit()
         return redirect("/admin")
 
     return render_template("admin/edit.html", item=item)
