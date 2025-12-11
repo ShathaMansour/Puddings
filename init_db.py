@@ -1,14 +1,14 @@
 import sqlite3
 from werkzeug.security import generate_password_hash
 
-
 DB_PATH = "var/cafe.db"
-
 connection = sqlite3.connect(DB_PATH)
 
 with connection:
 
-    # Create tables
+    # Menu items table:
+    # Stores all items shown on the menu. 
+    # Admin dashboard adds/edits/deletes from here.
     connection.execute("""
         CREATE TABLE IF NOT EXISTS menu_items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,29 +16,40 @@ with connection:
             price REAL NOT NULL,
             category TEXT NOT NULL,
             description TEXT,
-            image TEXT
+            image TEXT   -- just storing a path to the uploaded image
         )
     """)
 
+    # Users table:
+    # Stores admin + barista accounts.
+    # Passwords are hashed for security.
+    # Role controls what dashboard they see.
     connection.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
+            password TEXT NOT NULL,  -- hashed password
             role TEXT NOT NULL CHECK(role IN ('admin', 'barista'))
         )
     """)
 
+    # Orders table:
+    # Stores every order created when a customer checks out.
+    # Status is used by the barista dashboard (pending → progress → ready → collected).
+    # created_at is for analytics + timestamps.
     connection.execute("""
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_name TEXT,
-            items TEXT NOT NULL,
+            items TEXT NOT NULL,  -- stored as JSON string
             status TEXT NOT NULL CHECK(status IN ('pending', 'progress', 'ready', 'collected')),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
+    # Settings table
+    # Used to store things like the active theme (default, Halloween, future: Christmas…)
+    # Can be expanded in the future without changing the schema.
     connection.execute("""
         CREATE TABLE IF NOT EXISTS settings (
             key TEXT PRIMARY KEY,
@@ -46,26 +57,30 @@ with connection:
         )
     """)
 
-    # Insert default theme
+    # Insert default theme ONLY if nothing exists yet
     connection.execute("""
         INSERT OR IGNORE INTO settings (key, value)
         VALUES ('theme', 'default')
     """)
 
-    # Insert example users (barista/admin) + hashing passwords
+    # Insert test users:
+    # Adds one admin + one barista for testing.
+    # Passwords are securely hashed here.
     user_count = connection.execute("SELECT COUNT(*) FROM users").fetchone()[0]
 
     if user_count == 0:
 
         connection.executemany("""
-    INSERT INTO users (username, password, role)
-    VALUES (?, ?, ?)
-""", [
-    ("testAdmin", generate_password_hash("admin123"), "admin"),
-    ("testBarista", generate_password_hash("barista123"), "barista")
-])
+            INSERT INTO users (username, password, role)
+            VALUES (?, ?, ?)
+        """, [
+            ("testAdmin", generate_password_hash("admin123"), "admin"),
+            ("testBarista", generate_password_hash("barista123"), "barista")
+        ])
 
-    # Insert sample menu items 
+    # Insert sample menu items:
+    # These are placeholders so the site has content immediately.
+    # Admin can change/remove everything later.
     item_count = connection.execute("SELECT COUNT(*) FROM menu_items").fetchone()[0]
 
     if item_count == 0:
@@ -95,5 +110,7 @@ with connection:
             ("Dobble", 1.80, "Board Games", "Find and match symbols quickly before your opponents!", "img/shess.png"),
             ("Exploding Kittens", 2.20, "Board Games", "Chaotic and fun card game filled with surprises.", "img/shess.png")
         ])
+
         print("Added sample menu items.")
+
 print("Database initialised!")
