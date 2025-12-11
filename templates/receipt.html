@@ -1,0 +1,63 @@
+{% extends "index.html" %}
+{% block title %}Receipt • Pudding’s{% endblock %}
+
+{% block content %}
+
+<div class="receipt-wrapper">
+    <div class="receipt-box">
+
+        <h2 class="receipt-title">Pudding’s Café</h2>
+        <p class="receipt-subtitle">39 South Bridge, Edinburgh</p>
+        <p class="receipt-subtitle">Tel: 0131 123 4567</p>
+
+        <div class="receipt-divider"></div>
+
+        <p class="receipt-order-label">
+            Order #{{ order_id }}
+            <span class="receipt-date">{{ now }}</span>
+        </p>
+
+        <div class="receipt-divider"></div>
+
+        <!-- ITEMS TABLE -->
+        <table class="receipt-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="right">Qty</th>
+                    <th class="right">£</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td class="right">{{ item.qty }}</td>
+                    <td class="right">{{ "%.2f"|format(item.subtotal) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-total-row">
+            <span>Total</span>
+            <span class="total-amount">£{{ "%.2f"|format(total) }}</span>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <p class="receipt-thankyou">
+            Thank you for visiting Pudding’s!  
+            <br>We hope to see you again.
+        </p>
+
+        <button class="receipt-print-btn" onclick="window.print()">Print Receipt</button>
+        <a href="/" class="receipt-home-btn">Return Home</a>
+
+    </div>
+</div>
+
+
+{% endblock %}
