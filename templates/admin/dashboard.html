@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block title %}Admin Dashboard • Pudding’s{% endblock %}
+{% block title %}Pudding’s Admin Dashboard {% endblock %}
 
 {% block content %}
 
@@ -8,13 +8,14 @@
 
     <div class="admin-actions">
         <a href="/admin/add" class="admin-btn add-btn">+ Add New Item</a>
+        <a class="admin-btn" href="/admin/analytics">View Analytics</a>
     </div>
 </div>
 
 <!-- FILTER BAR -->
 <form method="GET" class="admin-filter-bar">
 
-    <input type="text" name="search" placeholder="Search name..."
+    <input type="text" name="search" placeholder="Search for item name..."
            value="{{ request.args.get('search', '') }}">
 
     <select name="category">
@@ -31,6 +32,7 @@
 
     <a href="/admin" class="admin-btn reset-btn">Reset</a>
 </form>
+
 <h2>Theme Settings</h2>
 
 <form method="POST" action="/admin/theme">

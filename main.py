@@ -171,20 +171,42 @@ def checkout():
 
     db = get_db()
 
-    # Convert cart items to JSON-friendly list
     order_items = []
+    total = 0
+
     for item_id, qty in cart.items():
-        item = db.execute("SELECT name FROM menu_items WHERE id=?", (item_id,)).fetchone()
+        item = db.execute(
+            "SELECT * FROM menu_items WHERE id=?", (item_id,)
+        ).fetchone()
+
         if item:
-            order_items.append({"name": item["name"], "qty": qty})
+            subtotal = item["price"] * qty
+            total += subtotal
+            order_items.append({
+                "name": item["name"],
+                "qty": qty,
+                "subtotal": subtotal
+            })
 
-    # Create the order in the database
-    create_order("Customer", order_items)
+    # Create the order and GET the ID
+    order_id = create_order("Customer", [
+        {"name": i["name"], "qty": i["qty"]} for i in order_items
+    ])
 
-    # Clear the cart
     session["cart"] = {}
 
-    return render_template("order_success.html")
+    from datetime import datetime
+    now = datetime.now().strftime("%d %b %Y • %H:%M")
+
+    return render_template(
+        "receipt.html",
+        order_items=order_items,
+        total=total,
+        order_id=order_id,   
+        now=now
+    )
+
+
 
 @app.context_processor
 def inject_theme():

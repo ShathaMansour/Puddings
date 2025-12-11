@@ -1,0 +1,81 @@
+{% extends "index.html" %}
+{% block title %}Analytics • Admin{% endblock %}
+
+{% block content %}
+
+<h1 class="admin-title">Analytics Dashboard</h1>
+
+<div class="analytics-summary">
+    <div class="summary-card">
+        <h2>{{ total_orders }}</h2>
+        <p>Total Orders Placed</p>
+    </div>
+</div>
+
+<!-- BAR CHART: Popular Items -->
+<div class="chart-card">
+    <h3>Most Popular Menu Items</h3>
+    <canvas id="popularChart"></canvas>
+</div>
+
+<!-- LINE CHART: Orders Per Day -->
+<div class="chart-card">
+    <h3>Orders Per Day</h3>
+    <canvas id="ordersDayChart"></canvas>
+</div>
+
+<!-- Jinja variables stored safely as JSON -->
+<script id="popular-data" type="application/json">
+    {{ popular_items | tojson }}
+</script>
+
+<script id="orders-day-data" type="application/json">
+    {{ orders_per_day | tojson }}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Read parsed data from JSON script tags
+    const popular = JSON.parse(document.getElementById("popular-data").textContent);
+    const perDay = JSON.parse(document.getElementById("orders-day-data").textContent);
+
+    const popularLabels = popular.map(row => row[0]);
+    const popularValues = popular.map(row => row[1]);
+
+    new Chart(document.getElementById("popularChart"), {
+        type: "bar",
+        data: {
+            labels: popularLabels,
+            datasets: [{
+                label: "Orders",
+                data: popularValues,
+                backgroundColor: "#c68b59"
+            }]
+        }
+    });
+
+    const dayLabels = perDay.map(row => row[0]);
+    const dayValues = perDay.map(row => row[1]);
+
+    new Chart(document.getElementById("ordersDayChart"), {
+        type: "line",
+        data: {
+            labels: dayLabels,
+            datasets: [{
+                label: "Orders Per Day",
+                data: dayValues,
+                borderColor: "#4A292B",
+                fill: false,
+                tension: 0.3
+            }]
+        }
+    });
+
+});
+</script>
+
+
+
+{% endblock %}

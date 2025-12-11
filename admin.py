@@ -144,3 +144,46 @@ def admin_change_theme():
     theme = request.form["theme"]
     set_setting("theme", theme)
     return redirect("/admin")
+
+@admin.route("/admin/analytics")
+@admin_required
+def analytics_dashboard():
+    db = get_db()
+
+    # Most popular menu items (count how many times they appear in orders)
+    popular_items = [
+    (row[0], row[1])
+    for row in db.execute("""
+        SELECT json_extract(value, '$.name') AS name,
+               COUNT(*) AS count
+        FROM orders, json_each(orders.items)
+        GROUP BY name
+        ORDER BY count DESC
+    """).fetchall()
+]
+
+
+    # Orders per day
+    orders_per_day = [
+    (row[0], row[1])
+    for row in db.execute("""
+        SELECT DATE(created_at) AS day,
+               COUNT(*) AS count
+        FROM orders
+        GROUP BY day
+        ORDER BY day
+    """).fetchall()
+]
+
+
+    # Total number of orders
+    total_orders = db.execute("SELECT COUNT(*) FROM orders").fetchone()[0]
+
+    return render_template(
+    "admin/analytics.html",
+    popular_items=popular_items,
+    orders_per_day=orders_per_day,
+    total_orders=total_orders
+)
+
+
