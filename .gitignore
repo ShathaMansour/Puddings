@@ -1,0 +1,11 @@
+.venv/
+venv/
+env/
+.env
+__pycache__/
+*.pyc
+var/*.db
+*.db
+static/uploads/*
+!static/uploads/.gitkeep
+.vscode/
