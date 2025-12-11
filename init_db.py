@@ -8,9 +8,7 @@ connection = sqlite3.connect(DB_PATH)
 
 with connection:
 
-    # -------------------------
-    # CREATE TABLES
-    # -------------------------
+    # Create tables
     connection.execute("""
         CREATE TABLE IF NOT EXISTS menu_items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,15 +46,13 @@ with connection:
         )
     """)
 
-    # Insert default theme only once
+    # Insert default theme
     connection.execute("""
         INSERT OR IGNORE INTO settings (key, value)
         VALUES ('theme', 'default')
     """)
 
-    # -------------------------
-    # INSERT DEFAULT USERS ONCE
-    # -------------------------
+    # Insert example users (barista/admin) + hashing passwords
     user_count = connection.execute("SELECT COUNT(*) FROM users").fetchone()[0]
 
     if user_count == 0:
@@ -69,10 +65,7 @@ with connection:
     ("testBarista", generate_password_hash("barista123"), "barista")
 ])
 
-
-    # -------------------------
-    # INSERT SAMPLE MENU ITEMS ONCE
-    # -------------------------
+    # Insert sample menu items 
     item_count = connection.execute("SELECT COUNT(*) FROM menu_items").fetchone()[0]
 
     if item_count == 0:
@@ -81,21 +74,21 @@ with connection:
             VALUES (?, ?, ?, ?, ?)
         """, [
 
-            # DRINKS
+            # Drinks
             ("Vanilla Latte", 3.80, "Drinks", "Smooth espresso blended with steamed milk and vanilla syrup.", "img/slideshow4.png"),
             ("Iced Caramel Macchiato", 4.20, "Drinks", "Espresso over milk with sweet caramel drizzle served on ice.", "img/slideshow5.png"),
             ("Mocha Deluxe", 4.50, "Drinks", "Rich espresso mixed with chocolate and topped with whipped cream.", "img/slideshow4.png"),
             ("Matcha Green Tea Latte", 4.00, "Drinks", "Creamy ceremonial-grade matcha blended with milk.", "img/slideshow5.png"),
             ("Chai Spice Latte", 3.90, "Drinks", "Aromatic chai infused with cinnamon, cardamom, and warm spices.", "img/slideshow4.png"),
 
-            # CAKE
+            # Cake
             ("Triple Chocolate Cake Slice", 4.50, "Cake", "Dark, milk, and white chocolate layers topped with ganache.", "img/slideshow2.png"),
             ("Victoria Sponge Slice", 4.20, "Cake", "Classic vanilla sponge filled with raspberry jam and cream.", "img/slideshow3.png"),
             ("Carrot Walnut Cake", 4.30, "Cake", "Moist carrot cake with walnuts and cream cheese frosting.", "img/slideshow2.png"),
             ("Red Velvet Slice", 4.40, "Cake", "Smooth cocoa sponge with velvety cream cheese icing.", "img/slideshow3.png"),
             ("Lemon Drizzle Slice", 3.90, "Cake", "Zesty lemon sponge soaked in sweet citrus glaze.", "img/slideshow3.png"),
 
-            # BOARD GAMES
+            # Board games
             ("Uno Deck", 1.50, "Board Games", "Fast-paced card game fun for all ages.", "img/shess.png"),
             ("Jenga Tower", 2.00, "Board Games", "Stack wooden blocks and try not to let the tower fall!", "img/shess.png"),
             ("Chess Set", 2.50, "Board Games", "Classic strategy board game for two players.", "img/shess.png"),
@@ -103,5 +96,4 @@ with connection:
             ("Exploding Kittens", 2.20, "Board Games", "Chaotic and fun card game filled with surprises.", "img/shess.png")
         ])
         print("Added sample menu items.")
-
 print("Database initialised!")

@@ -1,5 +1,7 @@
 import sqlite3
 from flask import g, current_app
+import json
+
 
 def get_db():
     if "db" not in g:
@@ -36,12 +38,9 @@ def delete_item(id):
     db.execute("DELETE FROM menu_items WHERE id=?", (id,))
     db.commit()
 
-import json
-
 def create_order(customer_name, items):
     db = get_db()
 
-    import json
     items_json = json.dumps(items)
 
     cursor = db.execute("""
@@ -50,9 +49,7 @@ def create_order(customer_name, items):
     """, (customer_name, items_json))
 
     db.commit()
-
     return cursor.lastrowid   
-
 
 def get_orders():
     db = get_db()
@@ -66,7 +63,6 @@ def get_setting(key):
     db = get_db()
     row = db.execute("SELECT value FROM settings WHERE key=?", (key,)).fetchone()
     return row["value"] if row else None
-
 def set_setting(key, value):
     db = get_db()
     db.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value))

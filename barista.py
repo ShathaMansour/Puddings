@@ -22,7 +22,7 @@ def dashboard():
     return render_template("barista/dashboard.html", orders=orders)
 
 
-# UPDATE ORDER STATUS (AJAX)
+# Update order status 
 @barista.route("/update", methods=["POST"])
 @barista_required
 def update_status():

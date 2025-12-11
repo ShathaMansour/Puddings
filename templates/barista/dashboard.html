@@ -12,7 +12,7 @@
 
 <div class="barista-columns">
 
-    <!-- PENDING -->
+    <!-- Pending -->
     <div class="barista-column" id="pending" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h2>Pending</h2>
         {% for o in orders if o.status == "pending" %}
@@ -20,7 +20,7 @@
         {% endfor %}
     </div>
 
-    <!-- IN PROGRESS -->
+    <!-- In Progress -->
     <div class="barista-column" id="progress" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h2>In Progress</h2>
         {% for o in orders if o.status == "progress" %}
@@ -28,7 +28,7 @@
         {% endfor %}
     </div>
 
-    <!-- READY -->
+    <!-- Ready -->
     <div class="barista-column" id="ready" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h2>Ready</h2>
         {% for o in orders if o.status == "ready" %}
@@ -36,7 +36,7 @@
         {% endfor %}
     </div>
 
-        <!-- COLLECTED -->
+        <!-- Collected -->
     <div class="barista-column" id="collected" ondrop="drop(event)" ondragover="allowDrop(event)">
     <h2>Collected</h2>
         {% for o in orders if o.status == "collected" %}
@@ -54,7 +54,7 @@ function allowDrop(ev) {
     ev.preventDefault();
 }
 
-// Start 3-minute fade-out timer
+// 3 second fade-out timer for collected items 
 function startCollectedTimer(card) {
     if (card.dataset.timerStarted === "true") return;
     card.dataset.timerStarted = "true";
@@ -71,7 +71,6 @@ function startCollectedTimer(card) {
 function drag(ev) {
     ev.dataTransfer.setData("order_id", ev.target.dataset.id);
 }
-
 // Drop handler
 function drop(ev) {
     ev.preventDefault();
@@ -85,7 +84,7 @@ function drop(ev) {
     // Move card visually
     column.appendChild(card);
 
-    // If dropped in "collected" column -> start countdown
+    // If dropped in collected column start countdown
     if (column.id === "collected") {
         startCollectedTimer(card);
     }

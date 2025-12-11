@@ -1,12 +1,12 @@
 {% extends "index.html" %}
-{% block title %}Menu • Pudding’s{% endblock %}
+{% block title %}Menu - Pudding’s{% endblock %}
 {% set active = 'menu' %}
 
 {% block content %}
 
 <div class="menu-layout">
 
-    <!-- LEFT SIDEBAR WITH CATEGORY LINKS -->
+    <!-- Left sidebar with category links -->
     <aside class="menu-sidebar">
         {% for category in categories.keys() %}
             <a href="#cat-{{ loop.index }}" class="sidebar-category">
@@ -23,7 +23,7 @@
     </aside>
 
 
-    <!-- RIGHT MAIN CONTENT -->
+    <!-- Right main content -->
     <section class="menu-content">
 
         {% for category, items in categories.items() %}
@@ -48,7 +48,7 @@
 
 
 
-                    <!-- ITEM NAME + PRICE -->
+                    <!-- Item name + price -->
                     <h3 class="menu-item-name">
                         {{ item["name"] }}
                         <span class="item-price">£{{ "%.2f"|format(item["price"]) }}</span>
@@ -93,7 +93,7 @@ document.querySelectorAll(".qty-selector").forEach(selector => {
     let qty = 1;
 
 plus.addEventListener("click", () => {
-    if (qty < 5) {                  // ⭐ LIMIT 5
+    if (qty < 5) {                  // Limit quantity to 5 per item 
         qty++;
         number.textContent = qty;
         input.value = qty;

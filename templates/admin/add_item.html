@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block title %}Add Item • Admin{% endblock %}
+{% block title %}Add Item - Admin{% endblock %}
 
 {% block content %}
 
@@ -7,7 +7,7 @@
 
     <h1 class="admin-form-title">Add New Item</h1>
 
-    <!-- IMPORTANT: enctype added -->
+    <!-- enctype -->
     <form method="POST" enctype="multipart/form-data" class="admin-form">
 
         <div class="form-group">
@@ -30,7 +30,7 @@
             <textarea name="description" rows="4" required></textarea>
         </div>
 
-        <!-- NEW IMAGE UPLOAD FIELD -->
+        <!-- New image upload field -->
         <div class="form-group">
             <label>Upload Image</label>
             <input type="file" name="image_file" accept="image/*">

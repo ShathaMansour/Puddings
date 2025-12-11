@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, render_template, request, redirect, session, abort, current_app
 from werkzeug.utils import secure_filename
-from database import get_all_items, get_item, add_item, set_setting, update_item, delete_item, get_db
+from database import get_all_items, set_setting, delete_item, get_db
 
 
 admin = Blueprint("admin", __name__)
@@ -14,11 +14,6 @@ def admin_required(func):
     wrapper.__name__ = func.__name__
     return wrapper
 
-
-# ADMIN DASHBOARD
-from flask import request
-from database import get_all_items
-from functools import wraps
 
 @admin.route("/admin")
 @admin_required
@@ -65,14 +60,14 @@ def add_item():
         category = request.form["category"]
         description = request.form["description"]
 
-        # HANDLE IMAGE UPLOAD
+        # Handle image upload
         image_file = request.files.get("image_file")
         filename = None
 
         if image_file and image_file.filename != "":
             filename = secure_filename(image_file.filename)
             file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-            image_file.save(file_path)   # <-- SAVES PERMANENTLY
+            image_file.save(file_path)   # Saved permenantly 
 
             # Store path relative to /static
             filename = f"uploads/{filename}"

@@ -6,17 +6,12 @@ import json
 from auth import auth 
 from admin import admin
 from barista import barista
+from dotenv import load_dotenv
 import os
 
-
-
-
-
-# ---------------- INITIALIZE FLASK APP ONCE ----------------
+load_dotenv()
 app = Flask(__name__)
 
-
-# ---------------- REGISTER FILTERS ----------------
 @app.template_filter("loads")
 def loads_filter(s):
     try:
@@ -25,8 +20,6 @@ def loads_filter(s):
         return []
 
 
-
-# ---------------- CONFIG LOADING (LECTURER STYLE) ----------------
 def init(app):
     config = configparser.ConfigParser()
     config_location = "etc/defaults.cfg"
@@ -37,7 +30,7 @@ def init(app):
 
         # Flask config
         app.config["DEBUG"] = config.getboolean("flask", "debug")
-        app.secret_key = config.get("flask", "secret_key")
+        app.secret_key = os.getenv("SECRET_KEY")
 
         # Server config
         app.config["HOST"] = config.get("server", "host")
@@ -46,15 +39,13 @@ def init(app):
         # Database config
         app.config["DATABASE"] = config.get("database", "db_path")
 
+        # Upload folder for admin image uploads
         app.config["UPLOAD_FOLDER"] = "static/uploads"
         os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-
-
 
     except Exception as e:
         print("Error reading config:", e)
 
-# ---- Initialize Flask app ----
 init(app)
 
 
@@ -62,7 +53,7 @@ app.register_blueprint(auth)
 app.register_blueprint(admin)
 app.register_blueprint(barista)
 
-# ---------------- DATABASE ----------------
+# Database
 def get_db():
     if "db" not in g:
         g.db = sqlite3.connect(app.config["DATABASE"])
@@ -77,7 +68,7 @@ def close_db(error=None):
         db.close()
 
 
-# ---------------- ROUTES ----------------
+# Main routes
 @app.route("/")
 def home():
     db = get_db()
@@ -87,10 +78,10 @@ def home():
         SELECT DISTINCT category FROM menu_items
     """).fetchall()
 
-    # Convert rows -> list of strings
+    # Convert rows to list of strings
     categories = [c["category"] for c in categories]
 
-    # Pick the FIRST TWO categories (or change to random.sample)
+    # Pick the first categories to display
     featured = categories[:2]
 
     # Load items for these two categories
@@ -110,12 +101,12 @@ def home():
                            featured=featured_data)
 
 
-
+# About page 
 @app.route("/about")
 def about():
     return render_template("about.html", active="about")
 
-
+# Menu (ordering) Page
 @app.route("/menu")
 def menu():
     db = get_db()
@@ -133,7 +124,7 @@ def menu():
 
     return render_template("menu.html", categories=categories, active="menu", cart_count=cart_count)
 
-
+# Cart page 
 @app.route("/cart")
 def cart():
     db = get_db()
@@ -158,10 +149,10 @@ def add_to_cart(item_id):
 
     cart[item_id] = cart.get(item_id, 0) + qty
 
-    session["cart"] = cart
+    session["cart"] = cart # Resets every session 
     return redirect("/menu")
 
-
+# Checkout page
 @app.route("/checkout", methods=["POST"])
 def checkout():
     cart = session.get("cart", {})
@@ -206,19 +197,18 @@ def checkout():
         now=now
     )
 
-
-
+# Admin change theme getter
 @app.context_processor
 def inject_theme():
     from database import get_setting
     theme = get_setting("theme")
     return {"active_theme": theme}
 
+# Access forbidden page (designed 403 template)
 @app.errorhandler(403)
 def forbidden(e):
     return render_template("errors/403.html"), 403
 
-# ---------------- RUN SERVER ----------------
 if __name__ == "__main__":
     app.run(
         host=app.config["HOST"],
