@@ -6,17 +6,16 @@ from database import get_all_items, set_setting, delete_item, get_db
 
 admin = Blueprint("admin", __name__)
 
-
-# Admin-only access decorator:
-# Ensures that only users with role "admin"
-# can access routes decorated with @admin_required.
+# SECURITY: Barista access only
+# This decorator makes sure ONLY admins can access these routes.
+# If someone tries to sneak in, it will show 403 page.
 def admin_required(func):
     def wrapper(*a, **kw):
         if session.get("role") != "admin":
             return abort(403)   # Forbidden page if user is not admin
         return func(*a, **kw)
 
-    # Preserve original function name (important for Flask routing)
+    # Preserve original function name 
     wrapper.__name__ = func.__name__
     return wrapper
 
