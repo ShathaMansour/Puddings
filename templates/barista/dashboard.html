@@ -36,67 +36,94 @@
         {% endfor %}
     </div>
 
+        <!-- COLLECTED -->
+    <div class="barista-column" id="collected" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>Collected</h2>
+        {% for o in orders if o.status == "collected" %}
+            {% include 'barista/order_card.html' %}
+        {% endfor %}
+    </div>
+
 </div>
 
 <a class="logout-btn" href="/logout">Logout</a>
 
 <script>
-// ALLOW DROP
+// Allow dropping
 function allowDrop(ev) {
     ev.preventDefault();
 }
 
-// DRAG START
+// Start 3-minute fade-out timer
+function startCollectedTimer(card) {
+    if (card.dataset.timerStarted === "true") return;
+    card.dataset.timerStarted = "true";
+
+    setTimeout(() => {
+        card.style.transition = "opacity 1s ease";
+        card.style.opacity = "0";
+
+        setTimeout(() => card.remove(), 1000);
+    }, 3000);
+}
+
+// Drag start
 function drag(ev) {
     ev.dataTransfer.setData("order_id", ev.target.dataset.id);
 }
 
-// DROP HANDLER
+// Drop handler
 function drop(ev) {
     ev.preventDefault();
 
+    const column = ev.target.closest(".barista-column");
+    if (!column) return;
+
     const orderId = ev.dataTransfer.getData("order_id");
-    const newStatus = ev.target.closest(".barista-column").id;
-
-    // Move element visually
     const card = document.querySelector(`[data-id='${orderId}']`);
-    ev.target.closest(".barista-column").appendChild(card);
 
-    // Send AJAX update
+    // Move card visually
+    column.appendChild(card);
+
+    // If dropped in "collected" column -> start countdown
+    if (column.id === "collected") {
+        startCollectedTimer(card);
+    }
+
+    // Update backend
     fetch("/barista/update", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             order_id: orderId,
-            status: newStatus
+            status: column.id
         })
     });
 }
 
+// Clock updater
 function updateBaristaClock() {
     const dateEl = document.getElementById("barista-date");
     const timeEl = document.getElementById("barista-time");
 
     const now = new Date();
+    const dateOpt = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
 
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric'
-    };
-
-    dateEl.textContent = now.toLocaleDateString('en-UK', options);
-    timeEl.textContent = now.toLocaleTimeString('en-UK', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    dateEl.textContent = now.toLocaleDateString("en-UK", dateOpt);
+    timeEl.textContent = now.toLocaleTimeString("en-UK", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
 }
 
-// update immediately
+// Start clock
 updateBaristaClock();
-
-// update every second
 setInterval(updateBaristaClock, 1000);
 
-
+// Start timers for orders already in collected
+document.querySelectorAll("#collected .order-card").forEach(startCollectedTimer);
 </script>
+
 
 {% endblock %}

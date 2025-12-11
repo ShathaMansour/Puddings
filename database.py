@@ -40,11 +40,19 @@ import json
 
 def create_order(customer_name, items):
     db = get_db()
-    db.execute("""
+
+    import json
+    items_json = json.dumps(items)
+
+    cursor = db.execute("""
         INSERT INTO orders (customer_name, items, status)
         VALUES (?, ?, 'pending')
-    """, (customer_name, json.dumps(items)))
+    """, (customer_name, items_json))
+
     db.commit()
+
+    return cursor.lastrowid   
+
 
 def get_orders():
     db = get_db()
